@@ -1,0 +1,29 @@
+---
+
+import Layout from '../layouts/Layout.astro';
+import ArticuloCard from '../components/ArticuloCard.astro';
+import { getArticulos } from '../lib/strapi';
+
+const articulos = await getArticulos().catch((err) => {
+  console.error(err);
+  return [];
+});
+---
+<Layout title="Inicio">
+  <header class="mb-10">
+    <h1 class="text-4xl font-bold mb-2">Publicaciones Recientes</h1>
+    <p class="text-gray-600">Reflexiones sobre historia, economía, política y filosofía</p>
+  </header>
+
+  {articulos.length === 0 ? (
+    <p class="text-gray-500">
+      No hay artículos publicados todavía. Verifica que Strapi esté corriendo en {import.meta.env.STRAPI_URL}.
+    </p>
+  ) : (
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {articulos.map((articulo) => (
+        <ArticuloCard articulo={articulo} />
+      ))}
+    </div>
+  )}
+</Layout>

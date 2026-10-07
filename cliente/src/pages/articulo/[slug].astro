@@ -1,0 +1,144 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CategoriaBadge from '../../components/CategoriaBadge.astro';
+import { 
+  getArticulos, 
+  getArticuloBySlug, 
+  getStrapiImageUrl 
+} from '../../lib/strapi';
+
+export async function getStaticPaths() {
+  try {
+    const articulos = await getArticulos();
+    console.log('📝 Artículos disponibles:', articulos.map(a => a.slug));
+    return articulos.map((articulo) => ({
+      params: { slug: articulo.slug },
+      props: { articulo },
+    }));
+  } catch (err) {
+    console.error('❌ Error en getStaticPaths:', err);
+    return [];
+  }
+}
+
+const { articulo } = Astro.props;
+const imagenUrl = getStrapiImageUrl(articulo.imagenPortada?.url);
+
+// ============================================
+// RENDERIZADOR DE BLOQUES DE STRAPI 5
+// ============================================
+function renderBlocks(blocks: any): string {
+  if (!blocks) return '<p><em>Sin contenido</em></p>';
+  if (typeof blocks === 'string') return blocks;
+  if (!Array.isArray(blocks)) return '';
+  
+  return blocks.map((block: any) => {
+    // Extraer el texto (puede tener negritas, cursivas, enlaces, etc.)
+    const renderChildren = (children: any[]): string => {
+      if (!children) return '';
+      return children.map((child: any) => {
+        let text = child.text || '';
+        if (child.bold) text = `<strong>${text}</strong>`;
+        if (child.italic) text = `<em>${text}</em>`;
+        if (child.underline) text = `<u>${text}</u>`;
+        if (child.strikethrough) text = `<s>${text}</s>`;
+        if (child.code) text = `<code>${text}</code>`;
+        if (child.type === 'link' && child.url) {
+          text = `<a href="${child.url}" target="_blank" rel="noopener">${text}</a>`;
+        }
+        return text;
+      }).join('');
+    };
+
+    // Texto plano del bloque (sin formato)
+    const fullText = block.children?.map((c: any) => c.text || '').join('') || '';
+
+    switch (block.type) {
+      case 'paragraph': {
+        // 🔥 Detectar títulos numerados disfrazados de párrafo:
+        // - Todo el texto está en negrita
+        // - Empieza con "1. ", "2. ", "3. ", etc.
+        const todosNegrita = block.children?.length > 0 
+          && block.children.every((c: any) => c.bold === true);
+        const empiezaConNumero = /^\d+\.\s/.test(fullText.trim());
+        const esCorto = fullText.length < 120; // los títulos no son largos
+        
+        if (todosNegrita && empiezaConNumero && esCorto) {
+          return `<h2 class="titulo-numerado">${fullText}</h2>`;
+        }
+        
+        return `<p>${renderChildren(block.children)}</p>`;
+      }
+      case 'heading': {
+        const level = block.level || 2;
+        return `<h${level}>${renderChildren(block.children)}</h${level}>`;
+      }
+      case 'list': {
+        const tag = block.format === 'ordered' ? 'ol' : 'ul';
+        const items = block.children?.map((li: any) => 
+          `<li>${renderChildren(li.children)}</li>`
+        ).join('') || '';
+        return `<${tag}>${items}</${tag}>`;
+      }
+      case 'quote':
+        return `<blockquote>${renderChildren(block.children)}</blockquote>`;
+      case 'code':
+        return `<pre><code>${renderChildren(block.children)}</code></pre>`;
+      case 'image': {
+        if (block.image?.url) {
+          const url = block.image.url.startsWith('http') 
+            ? block.image.url 
+            : `${import.meta.env.STRAPI_URL}${block.image.url}`;
+          return `<img src="${url}" alt="${block.image.alternativeText || ''}" />`;
+        }
+        return '';
+      }
+      default:
+        return renderChildren(block.children) ? `<p>${renderChildren(block.children)}</p>` : '';
+    }
+  }).join('');
+}
+
+const contenidoHtml = renderBlocks(articulo.contenido);
+---
+<Layout title={articulo.titulo}>
+  <a href="/" class="text-blue-600 hover:underline mb-6 inline-block">← Volver al inicio</a>
+
+  <article class="max-w-3xl mx-auto">
+    <header class="mb-8 text-center">
+      {articulo.categorias && articulo.categorias.length > 0 && (
+        <div class="flex flex-wrap gap-2 justify-center mb-4">
+          {articulo.categorias.map((cat) => (
+            <CategoriaBadge nombre={cat.nombre} slug={cat.slug} color={cat.color} />
+          ))}
+        </div>
+      )}
+      <h1 class="text-4xl font-bold mb-3">{articulo.titulo}</h1>
+      <p class="text-sm text-gray-500">
+        Publicado el {new Date(articulo.publishedAt).toLocaleDateString('es-CL', {
+          year: 'numeric', month: 'long', day: 'numeric'
+        })}
+      </p>
+    </header>
+
+    {imagenUrl && (
+      <img 
+        src={imagenUrl} 
+        alt={articulo.imagenPortada?.alternativeText || articulo.titulo}
+        class="w-full h-auto max-h-[30rem] object-cover rounded-lg mb-8"
+      />
+    )}
+
+    {articulo.extracto && (
+      <p class="text-xl text-gray-600 italic border-l-4 border-blue-600 pl-4 mb-8">
+        {articulo.extracto}
+      </p>
+    )}
+
+    <div class="prose-contenido" set:html={contenidoHtml} />
+
+    <div class="mt-12 pt-6 border-t">
+      <a href="/" class="text-blue-600 hover:underline">← Volver al inicio</a>
+    </div>
+  </article>
+</Layout>

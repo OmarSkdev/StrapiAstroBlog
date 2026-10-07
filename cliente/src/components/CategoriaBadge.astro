@@ -1,0 +1,19 @@
+---
+interface Props {
+  nombre: string;
+  slug: string;
+  color?: string | null;
+}
+
+const { nombre, slug, color } = Astro.props;
+const bgColor = color || '#6B7280';
+---
+
+<a 
+  href={`/categoria/${slug}`}
+  class="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white 
+  hover:opacity-80 transition-opacity"
+  style={`background-color: ${bgColor}`}
+>
+  {nombre}
+</a>

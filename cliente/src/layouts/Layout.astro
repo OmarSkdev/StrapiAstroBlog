@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+
+import { getCategorias } from '../lib/strapi';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'OIFB' } = Astro.props;
+const categorias = await getCategorias().catch(() => []);
+---
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} - OIFB</title>
+  </head>
+  <body class="min-h-screen bg-gray-50 font-sans text-gray-900">
+    <header class="bg-white border-b shadow-sm">
+      <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="text-2xl font-bold hover:text-blue-600">OIFB</a>
+        <nav class="hidden md:flex gap-4 text-sm">
+          {categorias.map((cat) => (
+            <a href={`/categoria/${cat.slug}`} class="hover:text-blue-600">
+              {cat.nombre}
+            </a>
+          ))}
+          <a href="/categorias" class="font-semibold hover:text-blue-600">
+            Todas
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+      <slot />
+    </main>
+
+    <footer class="bg-white border-t mt-16">
+      <div class="max-w-5xl mx-auto px-6 py-6 text-sm text-gray-500 text-center">
+        © {new Date().getFullYear()} OIFB — Observatorio de Ideas Filosóficas y Políticas
+      </div>
+    </footer>
+  </body>
+</html>

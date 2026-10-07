@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ArticuloCard from '../../components/ArticuloCard.astro';
+import { 
+  getCategorias, 
+  getCategoriaBySlug, 
+  getArticulosByCategoria 
+} from '../../lib/strapi';
+
+export async function getStaticPaths() {
+  const categorias = await getCategorias().catch(() => []);
+  return categorias.map((cat) => ({
+    params: { slug: cat.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const categoria = await getCategoriaBySlug(slug!);
+
+if (!categoria) {
+  return Astro.redirect('/404');
+}
+
+const articulos = await getArticulosByCategoria(slug!);
+---
+<Layout title={categoria.nombre}>
+  <a href="/" class="text-blue-600 hover:underline mb-6 inline-block">← Volver al inicio</a>
+
+  <header class="mb-10">
+    <h1 class="text-4xl font-bold mb-2">{categoria.nombre}</h1>
+    {categoria.descripcion && (
+      <p class="text-lg text-gray-600">{categoria.descripcion}</p>
+    )}
+    <p class="text-sm text-gray-500 mt-2">{articulos.length} artículo(s)</p>
+  </header>
+
+  {articulos.length === 0 ? (
+    <p class="text-gray-500">No hay artículos en esta categoría todavía.</p>
+  ) : (
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {articulos.map((articulo) => (
+        <ArticuloCard articulo={articulo} />
+      ))}
+    </div>
+  )}
+</Layout>
