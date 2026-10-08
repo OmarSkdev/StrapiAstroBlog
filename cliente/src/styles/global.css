@@ -126,3 +126,28 @@
   font-weight: 700;
   color: #0c0a09;
 }
+
+/* ============================================
+   ICONOS REDES SOCIALES
+   ============================================ */
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--icon-size, 20px) + 12px);
+  height: calc(var(--icon-size, 20px) + 12px);
+  border-radius: 9999px;
+  color: var(--icon-color, #57534e);
+  transition: color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.social-icon:hover {
+  color: var(--icon-hover, #1e40af);
+  background-color: rgba(30, 64, 175, 0.08);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.social-icon svg {
+  display: block;
+}

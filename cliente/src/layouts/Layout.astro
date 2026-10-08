@@ -2,6 +2,7 @@
 import '../styles/global.css';
 
 import { getCategorias } from '../lib/strapi';
+import SocialIcons from '../components/SocialIcons.astro';
 
 interface Props {
   title?: string;
@@ -39,8 +40,13 @@ const categorias = await getCategorias().catch(() => []);
     </main>
 
     <footer class="bg-white border-t mt-16">
-      <div class="max-w-5xl mx-auto px-6 py-6 text-sm text-gray-500 text-center">
-        © {new Date().getFullYear()} OIFB — Observatorio de Ideas Filosóficas y Políticas
+      <div class="max-w-5xl mx-auto px-6 py-8">
+        <div class="flex flex-col items-center gap-4">
+          <SocialIcons size={20} />
+          <p class="text-sm text-gray-500 text-center">
+            © {new Date().getFullYear()} OIFB — Observatorio de Ideas Filosóficas y Políticas
+          </p>
+        </div>
       </div>
     </footer>
   </body>
