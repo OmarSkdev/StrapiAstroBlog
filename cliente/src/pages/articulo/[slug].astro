@@ -1,11 +1,15 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CategoriaBadge from '../../components/CategoriaBadge.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
+
 import { 
   getArticulos, 
   getArticuloBySlug, 
   getStrapiImageUrl 
 } from '../../lib/strapi';
+
+
 
 export async function getStaticPaths() {
   try {
@@ -23,6 +27,10 @@ export async function getStaticPaths() {
 
 const { articulo } = Astro.props;
 const imagenUrl = getStrapiImageUrl(articulo.imagenPortada?.url);
+
+// URL completa del artículo para compartir
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://oifb.cl';
+const urlArticulo = `${siteUrl}/articulo/${articulo.slug}`;
 
 // ============================================
 // RENDERIZADOR DE BLOQUES DE STRAPI 5
@@ -135,7 +143,25 @@ const contenidoHtml = renderBlocks(articulo.contenido);
       </p>
     )}
 
+    <!-- 🔽 Compartir arriba -->
+    <div class="mb-8 pb-6 border-b">
+      <ShareButtons 
+        url={urlArticulo} 
+        title={articulo.titulo} 
+        description={articulo.extracto || ''} 
+      />
+    </div>
+
     <div class="prose-contenido" set:html={contenidoHtml} />
+
+    <!-- 🔽 Compartir abajo -->
+    <div class="mt-12 pt-6 border-t">
+      <ShareButtons 
+        url={urlArticulo} 
+        title={articulo.titulo} 
+        description={articulo.extracto || ''} 
+      />
+    </div>
 
     <div class="mt-12 pt-6 border-t">
       <a href="/" class="text-blue-600 hover:underline">← Volver al inicio</a>

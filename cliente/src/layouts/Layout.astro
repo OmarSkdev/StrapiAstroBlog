@@ -2,13 +2,14 @@
 import '../styles/global.css';
 
 import { getCategorias } from '../lib/strapi';
+
 import SocialIcons from '../components/SocialIcons.astro';
 
 interface Props {
   title?: string;
 }
 
-const { title = 'OIFB' } = Astro.props;
+const { title = 'SK80' } = Astro.props;
 const categorias = await getCategorias().catch(() => []);
 ---
 <!DOCTYPE html>
@@ -16,25 +17,66 @@ const categorias = await getCategorias().catch(() => []);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} - OIFB</title>
+    <title>{title} - SK80</title>
+    <title>{title} - SK80</title>
   </head>
   <body class="min-h-screen bg-gray-50 font-sans text-gray-900">
     <header class="bg-white border-b shadow-sm">
-      <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="text-2xl font-bold hover:text-blue-600">OIFB</a>
-        <nav class="hidden md:flex gap-4 text-sm">
-          {categorias.map((cat) => (
-            <a href={`/categoria/${cat.slug}`} class="hover:text-blue-600">
-              {cat.nombre}
-            </a>
-          ))}
-          <a href="/categorias" class="font-semibold hover:text-blue-600">
-            Todas
-          </a>
-        </nav>
-      </div>
-    </header>
+  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+    
+    <!-- Logo (izquierda) -->
+    <a href="/" class="text-2xl font-bold hover:text-blue-600 shrink-0">
+      OIFB
+    </a>
 
+    <!-- Navegación (centro) -->
+    <nav class="hidden md:flex gap-4 text-lg flex-1 justify-center">
+      {categorias.map((cat) => (
+        <a href={`/categoria/${cat.slug}`} class="hover:text-blue-600">
+          {cat.nombre}
+        </a>
+      ))}
+      <a href="/categorias" class="font-semibold hover:text-blue-600">
+        Todas
+      </a>
+    </nav>
+
+    <!-- Iconos sociales (derecha) -->
+    <div class="hidden md:block shrink-0">
+      <SocialIcons size={18} />
+    </div>
+
+    <!-- Menú móvil (solo visible en móvil) -->
+    <details class="md:hidden relative">
+      <summary class="list-none cursor-pointer p-2 hover:bg-gray-100 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </summary>
+      <nav class="absolute right-0 top-full mt-2 bg-white border rounded-lg shadow-lg py-2 min-w-[220px] z-20">
+        {categorias.map((cat) => (
+          <a 
+            href={`/categoria/${cat.slug}`} 
+            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-blue-600"
+          >
+            {cat.nombre}
+          </a>
+        ))}
+        <a 
+          href="/categorias" 
+          class="block px-4 py-2 text-sm font-semibold hover:bg-gray-50 hover:text-blue-600 border-t mt-1 pt-2"
+        >
+          Ver todas
+        </a>
+        <div class="px-4 py-3 border-t mt-2">
+          <SocialIcons size={18} />
+        </div>
+      </nav>
+    </details>
+  </div>
+</header>
     <main class="max-w-5xl mx-auto px-6 py-10">
       <slot />
     </main>

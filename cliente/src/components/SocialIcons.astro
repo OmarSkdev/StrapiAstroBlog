@@ -1,28 +1,57 @@
 ---
 interface Props {
   size?: number;
-  color?: string;
-  hoverColor?: string;
+  variant?: 'brand' | 'monochrome';  // 'brand' = colores corporativos, 'monochrome' = un solo color
+  color?: string;        // Solo se usa si variant='monochrome'
+  hoverColor?: string;   // Solo se usa si variant='monochrome'
   class?: string;
 }
 
 const { 
   size = 20, 
-  color = '#57534e',      // stone-600
-  hoverColor = '#1e40af', // blue-800
+  variant = 'brand',       // Por defecto: colores corporativos
+  color = '#57534e',
+  hoverColor = '#1e40af',
   class: className = '' 
 } = Astro.props;
 
-// Configura tus redes aquí (edita las URLs)
 const redes = [
-  { nombre: 'Facebook', url: 'https://facebook.com/oifb', icono: 'facebook' },
-  { nombre: 'Twitter', url: 'https://x.com/oifb', icono: 'twitter' },
-  { nombre: 'Instagram', url: 'https://instagram.com/oifb', icono: 'instagram' },
-  { nombre: 'YouTube', url: 'https://youtube.com/@oifb', icono: 'youtube' },
-  { nombre: 'RSS', url: '/rss.xml', icono: 'rss' },
+  { 
+    nombre: 'Facebook', 
+    url: 'https://facebook.com/oifb', 
+    icono: 'facebook', 
+    color: '#1877F2' 
+  },
+  { 
+    nombre: 'Twitter', 
+    url: 'https://twitter.com/oifb', 
+    icono: 'twitter', 
+    color: '#000000' 
+  },
+  { 
+    nombre: 'Instagram', 
+    url: 'https://instagram.com/oifb', 
+    icono: 'instagram', 
+    color: '#E4405F' 
+  },
+  { 
+    nombre: 'YouTube', 
+    url: 'https://youtube.com/@oifb', 
+    icono: 'youtube', 
+    color: '#FF0000' 
+  },
+  { 
+    nombre: 'RSS', 
+    url: '/rss.xml', 
+    icono: 'rss', 
+    color: '#FF6600' 
+  },
 ];
----
 
+// Determina el color según la variante
+const getIconColor = (red: any) => variant === 'brand' ? red.color : color;
+const getHoverColor = (red: any) => variant === 'brand' ? red.color : hoverColor;
+---
 <div class={`flex items-center gap-3 ${className}`}>
   {redes.map((red) => (
     <a 
@@ -32,7 +61,7 @@ const redes = [
       aria-label={red.nombre}
       title={red.nombre}
       class="social-icon"
-      style={`--icon-size: ${size}px; --icon-color: ${color}; --icon-hover: ${hoverColor};`}
+      style={`--icon-size: ${size}px; --icon-color: ${getIconColor(red)}; --icon-hover: ${getHoverColor(red)};`}
     >
       {red.icono === 'facebook' && (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width={size} height={size}>
