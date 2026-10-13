@@ -246,3 +246,110 @@
   padding-left: 1rem;
   border-left: 1px solid #e7e5e4;
 }
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 3rem 0;
+  flex-wrap: wrap;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #44403c;
+  background: #ffffff;
+  border: 1px solid #e7e5e4;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.pagination-btn:hover {
+  background: #f5f5f4;
+  color: #1e40af;
+  border-color: #d6d3d1;
+  text-decoration: none;
+}
+
+.pagination-active {
+  background: #1e40af;
+  color: #ffffff !important;
+  border-color: #1e40af;
+  font-weight: 700;
+  cursor: default;
+}
+
+.pagination-active:hover {
+  background: #1e40af;
+}
+
+.pagination-disabled {
+  color: #a8a29e;
+  background: #fafaf9;
+  border-color: #f5f5f4;
+  cursor: not-allowed;
+}
+
+.pagination-disabled:hover {
+  background: #fafaf9;
+  color: #a8a29e;
+  border-color: #f5f5f4;
+}
+
+.pagination-nav {
+  font-weight: 600;
+}
+
+.pagination-dots {
+  color: #a8a29e;
+  padding: 0 0.25rem;
+  user-select: none;
+}
+
+/* ============================================
+   TARJETA DE ARTÍCULO CON HOVER
+   ============================================ */
+.card-oifb {
+  background: #ffffff;
+  border: 1px solid #e7e5e4;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: 
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.card-oifb:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.12);
+}
+
+/* Imagen con zoom sutil */
+.card-oifb img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-oifb:hover img {
+  transform: scale(1.04);
+}
+
+/* Título con color al hover */
+.card-oifb:hover h2 a {
+  color: #1e40af;
+}

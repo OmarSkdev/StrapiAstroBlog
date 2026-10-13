@@ -9,7 +9,7 @@ interface Props {
 const { articulo } = Astro.props;
 const imagenUrl = getStrapiImageUrl(articulo.imagenPortada?.url);
 ---
-<article class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
+<article class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white card-oifb ">
   {imagenUrl && (
     <a href={`/articulo/${articulo.slug}`}>
       <img 

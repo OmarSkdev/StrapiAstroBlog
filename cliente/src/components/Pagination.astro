@@ -1,0 +1,75 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl?: string;  // ej: '/' o '/categoria/filosofia'
+}
+
+const { currentPage, totalPages, baseUrl = '' } = Astro.props;
+
+// Genera la URL correcta según la página
+function getPageUrl(page: number): string {
+  if (page === 1) return baseUrl || '/';
+  return `${baseUrl}/page/${page}`;
+}
+
+// Genera el rango de páginas a mostrar (máx 5 alrededor de la actual)
+function getPageRange(): number[] {
+  const range: number[] = [];
+  const delta = 2;
+  const start = Math.max(1, currentPage - delta);
+  const end = Math.min(totalPages, currentPage + delta);
+  for (let i = start; i <= end; i++) range.push(i);
+  return range;
+}
+
+const range = getPageRange();
+const hasPrev = currentPage > 1;
+const hasNext = currentPage < totalPages;
+---
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Paginación">
+    <!-- Botón anterior -->
+    {hasPrev ? (
+      <a href={getPageUrl(currentPage - 1)} class="pagination-btn pagination-nav" rel="prev">
+        ← Anterior
+      </a>
+    ) : (
+      <span class="pagination-btn pagination-nav pagination-disabled">← Anterior</span>
+    )}
+
+    <!-- Primera página + puntos suspensivos si es necesario -->
+    {range[0] > 1 && (
+      <>
+        <a href={getPageUrl(1)} class="pagination-btn">1</a>
+        {range[0] > 2 && <span class="pagination-dots">…</span>}
+      </>
+    )}
+
+    <!-- Números de página -->
+    {range.map((page) => (
+      page === currentPage ? (
+        <span class="pagination-btn pagination-active" aria-current="page">{page}</span>
+      ) : (
+        <a href={getPageUrl(page)} class="pagination-btn">{page}</a>
+      )
+    ))}
+
+    <!-- Última página + puntos suspensivos -->
+    {range[range.length - 1] < totalPages && (
+      <>
+        {range[range.length - 1] < totalPages - 1 && <span class="pagination-dots">…</span>}
+        <a href={getPageUrl(totalPages)} class="pagination-btn">{totalPages}</a>
+      </>
+    )}
+
+    <!-- Botón siguiente -->
+    {hasNext ? (
+      <a href={getPageUrl(currentPage + 1)} class="pagination-btn pagination-nav" rel="next">
+        Siguiente →
+      </a>
+    ) : (
+      <span class="pagination-btn pagination-nav pagination-disabled">Siguiente →</span>
+    )}
+  </nav>
+)}

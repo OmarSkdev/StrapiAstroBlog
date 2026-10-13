@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ArticuloCard from '../../components/ArticuloCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getArticulosPaginados } from '../../lib/strapi';
+
+
+export async function getStaticPaths() {
+    const PAGE_SIZE = 3;
+
+  // Obtener la primera página para saber cuántas páginas hay en total
+  const { pagination } = await getArticulosPaginados(1, PAGE_SIZE);
+  const totalPages = pagination.pageCount;
+  
+  // Generar rutas para páginas 2, 3, 4... (la 1 la maneja index.astro)
+  const paths = [];
+  for (let page = 2; page <= totalPages; page++) {
+    const { articulos, pagination: pag } = await getArticulosPaginados(page, PAGE_SIZE);
+    paths.push({
+      params: { page: page.toString() },
+      props: { articulos, pagination: pag },
+    });
+  }
+  
+  console.log(`📄 Generadas ${paths.length} páginas de paginación (2 a ${totalPages})`);
+  return paths;
+}
+
+const { articulos, pagination } = Astro.props;
+---
+<Layout title={`Página ${pagination.page}`}>
+  <header class="mb-12 text-center">
+    <h1 class="text-4xl font-bold mb-2">Publicaciones Recientes</h1>
+    <p class="text-gray-600">Página {pagination.page} de {pagination.pageCount}</p>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {articulos.map((articulo) => (
+      <ArticuloCard articulo={articulo} />
+    ))}
+  </div>
+
+  <Pagination 
+    currentPage={pagination.page} 
+    totalPages={pagination.pageCount} 
+    baseUrl="" 
+  />
+</Layout>

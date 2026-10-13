@@ -112,3 +112,53 @@ export function getStrapiImageUrl(url: string | null | undefined): string {
   if (url.startsWith('http')) return url;
   return `${STRAPI_URL}${url}`;
 }
+
+// ============================================
+// TIPOS DE PAGINACIÓN
+// ============================================
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+export interface ArticulosPaginados {
+  articulos: Articulo[];
+  pagination: Pagination;
+}
+
+// ============================================
+// ARTÍCULOS CON PAGINACIÓN
+// ============================================
+
+export async function getArticulosPaginados(page: number = 1, pageSize: number = 6): Promise<ArticulosPaginados> 
+{
+  const url = `${STRAPI_URL}/api/articulos?populate=imagenPortada,
+              categorias&sort=publishedAt:desc&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error al obtener artículos: ${res.statusText}`);
+  const data = await res.json();
+  return {
+    articulos: data.data.map(normalizarArticulo),
+    pagination: data.meta.pagination,
+  };
+}
+
+
+// ============================================
+// ARTÍCULOS POR CATEGORÍA CON PAGINACIÓN
+// ============================================
+export async function getArticulosByCategoriaPaginados(categoriaSlug: string,page: number = 1, 
+  pageSize: number = 6 ): Promise<ArticulosPaginados> {
+  const url = `${STRAPI_URL}/api/articulos?filters[categorias][slug][$eq]=${categoriaSlug}&populate=imagenPortada,
+              categorias&sort=publishedAt:desc&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error al obtener artículos: ${res.statusText}`);
+  const data = await res.json();
+  return {
+    articulos: data.data.map(normalizarArticulo),
+    pagination: data.meta.pagination,
+  };
+}
