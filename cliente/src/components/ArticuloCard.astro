@@ -1,5 +1,6 @@
 ---
 import CategoriaBadge from './CategoriaBadge.astro';
+import FechaBadge from './FechaBadge.astro';
 import { getStrapiImageUrl, type Articulo } from '../lib/strapi';
 
 interface Props {
@@ -9,17 +10,29 @@ interface Props {
 const { articulo } = Astro.props;
 const imagenUrl = getStrapiImageUrl(articulo.imagenPortada?.url);
 ---
-<article class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white card-oifb ">
-  {imagenUrl && (
-    <a href={`/articulo/${articulo.slug}`}>
-      <img 
-        src={imagenUrl} 
-        alt={articulo.imagenPortada?.alternativeText || articulo.titulo}
-        class="w-full h-48 object-cover"
-      />
-    </a>
-  )}
+<article class="group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:border-gray-300">
+  
+  <!-- Contenedor de la imagen con position relative -->
+  <div class="relative">
+    {imagenUrl && (
+      <a href={`/articulo/${articulo.slug}`} class="block overflow-hidden">
+        <img 
+          src={imagenUrl} 
+          alt={articulo.imagenPortada?.alternativeText || articulo.titulo}
+          class="w-full h-48 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          loading="lazy"
+        />
+      </a>
+    )}
+
+    <!-- Fecha flotando arriba a la derecha -->
+    <div class="absolute top-3 right-3 z-10 shadow-sm">
+      <FechaBadge fecha={articulo.publishedAt} variant="card" />
+    </div>
+  </div>
+
   <div class="p-4">
+    <!-- Solo las categorías, ya sin la fecha -->
     {articulo.categorias && articulo.categorias.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-3">
         {articulo.categorias.map((cat) => (
@@ -27,11 +40,16 @@ const imagenUrl = getStrapiImageUrl(articulo.imagenPortada?.url);
         ))}
       </div>
     )}
+
     <h2 class="text-2xl font-semibold">
-      <a href={`/articulo/${articulo.slug}`} class="hover:text-blue-600">
+      <a 
+        href={`/articulo/${articulo.slug}`} 
+        class="text-gray-900 transition-colors duration-200 group-hover:text-blue-700"
+      >
         {articulo.titulo}
       </a>
     </h2>
+    
     {articulo.extracto && (
       <p class="text-gray-600 mt-2 line-clamp-3">{articulo.extracto}</p>
     )}

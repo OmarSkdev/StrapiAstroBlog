@@ -1,0 +1,32 @@
+---
+interface Props {
+  fecha: string;
+  variant?: 'card' | 'article';
+}
+
+const { fecha, variant = 'card' } = Astro.props;
+
+const date = new Date(fecha);
+const dia = date.getDate().toString().padStart(2, '0');
+const mes = date.toLocaleDateString('es-CL', { month: 'short' }).replace('.', '').toUpperCase();
+const año = date.getFullYear();
+const fechaCompleta = date.toLocaleDateString('es-CL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<time 
+  datetime={fecha}
+  title={fechaCompleta}
+  class:list={[
+    'fecha-badge',
+    variant === 'article' ? 'fecha-badge-lg' : 'fecha-badge-sm'
+  ]}
+  aria-label={`Publicado el ${fechaCompleta}`}
+>
+    <span class="fecha-badge-dia">{dia}</span>
+    <span class="fecha-badge-mes">{mes}</span>
+    <span class="fecha-badge-año">{año}</span>  
+</time>

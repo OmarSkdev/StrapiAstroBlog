@@ -353,3 +353,86 @@
 .card-oifb:hover h2 a {
   color: #1e40af;
 }
+
+/* ============================================
+   BADGE DE FECHA
+   ============================================ */
+.fecha-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Efecto cristal sobre la imagen */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  
+  border: 1px solid #e7e5e4;
+  border-radius: 0.5rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1;
+  text-align: center;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+/* Tamaño pequeño (tarjetas) */
+.fecha-badge-sm {
+  width: 3.5rem;       /* 56px */
+  padding: 0.4rem 0.25rem;
+}
+
+.fecha-badge-sm .fecha-dia {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e40af;
+  line-height: 1;
+  margin-bottom: 0.15rem;
+}
+
+.fecha-badge-sm .fecha-mes {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #57534e;
+}
+
+.fecha-badge-sm .fecha-año {
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: #a8a29e;
+  margin-top: 0.1rem;
+}
+
+/* Tamaño grande (página individual del artículo) */
+.fecha-badge-lg {
+  width: 5rem;         /* 80px */
+  padding: 0.75rem 0.5rem;
+}
+
+.fecha-badge-lg .fecha-dia {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e40af;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.fecha-badge-lg .fecha-mes {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #57534e;
+}
+
+.fecha-badge-lg .fecha-año {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #a8a29e;
+  margin-top: 0.15rem;
+}
+
+/* Hover opcional (se ve más vivo) */
+.fecha-badge:hover {
+  border-color: #1e40af;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+}
